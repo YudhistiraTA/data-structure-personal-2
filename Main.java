@@ -1,5 +1,87 @@
-import java.util.LinkedList;
 import java.util.Scanner;
+
+class SinglyLinkedList<T> implements Iterable<T> {
+    private Node<T> head;
+    private Node<T> tail;
+    private int size;
+
+    private static class Node<T> {
+        T data;
+        Node<T> next;
+
+        Node(T data) {
+            this.data = data;
+            this.next = null;
+        }
+    }
+
+    public SinglyLinkedList() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
+
+    public void insert(int index, T data) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index out of bounds");
+        }
+        Node<T> newNode = new Node<>(data);
+        if (index == 0) {
+            newNode.next = head;
+            head = newNode;
+            if (tail == null) {
+                tail = newNode;
+            }
+        } else {
+            Node<T> current = head;
+            for (int i = 0; i < index - 1; i++) {
+                current = current.next;
+            }
+            newNode.next = current.next;
+            current.next = newNode;
+            if (newNode.next == null) {
+                tail = newNode;
+            }
+        }
+        size++;
+    }
+
+    public void clear() {
+        head = null;
+        tail = null;
+        size = 0;
+    }
+
+    public boolean isEmpty() {
+        return head == null;
+    }
+
+    public int size() {
+        return size;
+    }
+
+    @Override
+    public java.util.Iterator<T> iterator() {
+        return new java.util.Iterator<T>() {
+            private Node<T> current = head;
+
+            @Override
+            public boolean hasNext() {
+                return current != null;
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new java.util.NoSuchElementException();
+                }
+                T data = current.data;
+                current = current.next;
+                return data;
+            }
+        };
+    }
+}
 
 class Student {
     private String name;
@@ -73,7 +155,7 @@ class Student {
 }
 
 class StudentList {
-    private LinkedList<Student> students = new LinkedList<>();
+    private SinglyLinkedList<Student> students = new SinglyLinkedList<>();
     private Scanner scanner;
     private static final int MAX_STUDENTS = 5;
 
@@ -99,7 +181,7 @@ class StudentList {
             }
             index++;
         }
-        students.add(index, student);
+        students.insert(index, student);
         System.out.println("Student added successfully.");
     }
 
